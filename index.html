@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Secret Society</title>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Special+Elite&display=swap');
+
+    :root {
+      --cafe-oscuro: #3b211b;
+      --vino: #6f2c2c;
+      --cafe: #8a6242;
+      --papel: #f4eadc;
+      --papel-2: #ead7bd;
+      --sombra: rgba(35, 20, 12, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      color: var(--cafe-oscuro);
+      font-family: 'Cormorant Garamond', serif;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(111, 44, 44, 0.22), transparent 28%),
+        radial-gradient(circle at 90% 10%, rgba(80, 50, 25, 0.25), transparent 24%),
+        linear-gradient(rgba(125, 86, 50, 0.45), rgba(78, 45, 25, 0.6)),
+        url("https://images.unsplash.com/photo-1519682577862-22b62b24e493?auto=format&fit=crop&w=1600&q=80");
+      background-size: cover;
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mix-blend-mode: soft-light;
+      opacity: 0.35;
+      z-index: 0;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      backdrop-filter: blur(12px);
+      background: rgba(59, 33, 27, 0.82);
+      border-bottom: 1px solid rgba(244, 234, 220, 0.25);
+    }
+
+    nav {
+      max-width: 1200px;
+      margin: auto;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .logo {
+      color: var(--papel);
+      font-family: 'Special Elite', serif;
+      font-size: 1rem;
+      letter-spacing: 1px;
+    }
+
+    .menu {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .menu a {
+      color: var(--papel);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.95rem;
+      padding: 8px 13px;
+      border: 1px solid rgba(244, 234, 220, 0.28);
+      border-radius: 999px;
+      transition: 0.3s;
+    }
+
+    .menu a:hover {
+      background: var(--papel);
+      color: var(--vino);
+      transform: translateY(-2px);
+    }
+
+    main {
+      position: relative;
+      z-index: 1;
+    }
+
+    section {
+      min-height: 100vh;
+      padding: 80px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .paper {
+      width: min(1100px, 100%);
+      position: relative;
+      padding: clamp(34px, 6vw, 72px);
+      background:
+        linear-gradient(rgba(255,255,255,0.45), rgba(255,255,255,0.12)),
+        var(--papel);
+      box-shadow: 0 24px 70px var(--sombra);
+      border: 1px solid rgba(88, 54, 30, 0.25);
+      animation: aparecer 1s ease both;
+    }
+
+    .paper::before {
+      content: "";
+      position: absolute;
+      top: -22px;
+      left: 50%;
+      width: 210px;
+      height: 54px;
+      transform: translateX(-50%) rotate(-1deg);
+      background: rgba(220, 205, 170, 0.8);
+      box-shadow: 0 6px 18px rgba(50, 35, 20, 0.18);
+      clip-path: polygon(3% 12%, 100% 0, 94% 86%, 8% 100%);
+    }
+
+    .paper::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 25% 20%, rgba(120, 78, 45, 0.08), transparent 28%),
+        radial-gradient(circle at 80% 90%, rgba(111, 44, 44, 0.09), transparent 24%);
+      mix-blend-mode: multiply;
+    }
+
+    .hero {
+      text-align: center;
+    }
+
+    .small-title {
+      font-family: 'Special Elite', serif;
+      color: var(--vino);
+      font-size: clamp(1rem, 2vw, 1.4rem);
+      margin-bottom: 22px;
+    }
+
+    h1 {
+      color: var(--vino);
+      font-size: clamp(4rem, 10vw, 8.5rem);
+      font-weight: 700;
+      line-height: 0.85;
+      margin-bottom: 24px;
+      animation: flotar 4s ease-in-out infinite;
+    }
+
+    h2 {
+      color: var(--vino);
+      font-size: clamp(2.6rem, 6vw, 5rem);
+      text-align: center;
+      margin-bottom: 12px;
+    }
+
+    .divider {
+      width: min(430px, 80%);
+      height: 2px;
+      margin: 18px auto 28px;
+      background: var(--vino);
+      position: relative;
+    }
+
+    .divider::after {
+      content: "✦";
+      position: absolute;
+      right: -12px;
+      top: -15px;
+      color: var(--vino);
+      font-size: 1.5rem;
+    }
+
+    .intro {
+      max-width: 760px;
+      margin: auto;
+      font-family: 'Special Elite', serif;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: #682d2d;
+    }
+
+    .decor {
+      position: absolute;
+      font-size: clamp(3rem, 7vw, 6rem);
+      opacity: 0.42;
+      filter: sepia(0.4);
+      animation: respirar 5s ease-in-out infinite;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .decor.one {
+      left: -25px;
+      top: 20px;
+      transform: rotate(-18deg);
+    }
+
+    .decor.two {
+      right: -28px;
+      bottom: 18px;
+      transform: rotate(16deg);
+    }
+
+    .subtitle {
+      text-align: center;
+      max-width: 700px;
+      margin: 0 auto 34px;
+      font-family: 'Special Elite', serif;
+      font-size: 0.95rem;
+      color: #6b3d2a;
+      line-height: 1.7;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+      gap: 18px;
+      position: relative;
+      z-index: 3;
+    }
+
+    .card {
+      min-height: 250px;
+      padding: 12px;
+      background: rgba(255, 250, 240, 0.66);
+      border: 1px solid rgba(93, 55, 32, 0.22);
+      box-shadow: 0 12px 28px rgba(59, 33, 27, 0.16);
+      transition: 0.35s;
+      animation: subir 0.8s ease both;
+    }
+
+    .card:hover {
+      transform: translateY(-8px) rotate(-1deg);
+      box-shadow: 0 22px 45px rgba(59, 33, 27, 0.28);
+      background: rgba(255, 248, 235, 0.9);
+    }
+
+    .photo {
+      height: 155px;
+      border: 1px dashed rgba(111, 44, 44, 0.55);
+      background:
+        linear-gradient(135deg, rgba(111,44,44,0.12), rgba(230,205,170,0.55)),
+        repeating-linear-gradient(
+          -45deg,
+          rgba(59,33,27,0.05) 0,
+          rgba(59,33,27,0.05) 6px,
+          transparent 6px,
+          transparent 12px
+        );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: rgba(59, 33, 27, 0.62);
+      font-family: 'Special Elite', serif;
+      font-size: 0.78rem;
+      padding: 10px;
+      overflow: hidden;
+    }
+
+    .photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Ajuste especial para el cuarto apartado: The secret society */
+    #pagina .grid {
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+
+    #pagina .card {
+      min-height: auto;
+    }
+
+    #pagina .photo {
+      height: auto;
+      aspect-ratio: 16 / 9;
+      padding: 8px;
+    }
+
+    #pagina .photo img {
+      object-fit: contain;
+      background: #ead7bd;
+    }
+
+    .card h3 {
+      margin-top: 12px;
+      color: var(--vino);
+      font-size: 1.35rem;
+      text-align: center;
+    }
+
+    .card p {
+      margin-top: 6px;
+      text-align: center;
+      font-family: 'Special Elite', serif;
+      font-size: 0.72rem;
+      line-height: 1.45;
+      color: #6b3d2a;
+    }
+
+    .nota {
+      margin-top: 38px;
+      padding: 20px;
+      border-left: 4px solid var(--vino);
+      background: rgba(111, 44, 44, 0.08);
+      font-family: 'Special Elite', serif;
+      color: #642b2b;
+      line-height: 1.7;
+      position: relative;
+      z-index: 3;
+    }
+
+    footer {
+      text-align: center;
+      padding: 26px;
+      background: rgba(45, 25, 20, 0.9);
+      color: var(--papel);
+      font-family: 'Special Elite', serif;
+      font-size: 0.8rem;
+    }
+
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(28px) scale(0.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes subir {
+      from {
+        opacity: 0;
+        transform: translateY(24px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes flotar {
+      0%, 100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    @keyframes respirar {
+      0%, 100% {
+        opacity: 0.34;
+      }
+
+      50% {
+        opacity: 0.58;
+      }
+    }
+
+    @media (max-width: 720px) {
+      section {
+        padding: 62px 14px;
+      }
+
+      .paper {
+        padding: 38px 18px;
+      }
+
+      .menu {
+        justify-content: center;
+      }
+
+      .logo {
+        width: 100%;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 4.3rem;
+      }
+
+      .grid {
+        grid-template-columns: repeat(auto-fit, minmax(135px, 1fr));
+      }
+
+      .photo {
+        height: 135px;
+      }
+
+      #pagina .grid {
+        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      }
+
+      #pagina .photo {
+        height: auto;
+        aspect-ratio: 16 / 9;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <nav>
+      <div class="logo">THE SECRET SOCIETY</div>
+
+      <div class="menu">
+        <a href="#inicio">Inicio</a>
+        <a href="#primero">1ro</a>
+        <a href="#segundo">2do</a>
+        <a href="#tercero">3ro</a>
+        <a href="#pagina">Página</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="inicio">
+      <div class="paper hero">
+        <div class="decor one">✿</div>
+        <div class="decor two">❦</div>
+
+        <p class="small-title">by the secret society:</p>
+        <h1>¡Bienvenidos!</h1>
+        <div class="divider"></div>
+
+        <p class="intro">
+          ¿Te quieres divertir un rato viendo los secretos más humillantes,
+          extraños y turbios? ¡Entonces entra sin pena alguna! Aquí no solo
+          hallarás secretos, también habrán detalles específicos de los
+          momentos más hablados aquí en: Roosevelt.
+          ¡Disfruta y participa para que otros puedan disfrutar!
+        </p>
+
+        <div class="nota">
+          REDES:<br>
+          IG - thesecretsociety<br>
+          FC - TheSecretSociety<br>
+          TIKTOK - Rooseveltsecrets
+        </div>
+      </div>
+    </section>
+
+    <section id="primero">
+      <div class="paper">
+        <div class="decor one">✧</div>
+        <h2>Grupo de primero</h2>
+        <div class="divider"></div>
+        <p class="subtitle">
+          Los primeros nombres del archivo. Algunos parecen inocentes, otros esconden más de lo que dicen.
+        </p>
+        <div class="grid" id="grid-primero"></div>
+      </div>
+    </section>
+
+    <section id="segundo">
+      <div class="paper">
+        <div class="decor two">✿</div>
+        <h2>Grupo de segundo</h2>
+        <div class="divider"></div>
+        <p class="subtitle">
+          Entre rumores, alianzas y miradas sospechosas, este grupo tiene mucho que contar.
+        </p>
+        <div class="grid" id="grid-segundo"></div>
+      </div>
+    </section>
+
+    <section id="tercero">
+      <div class="paper">
+        <div class="decor one">❦</div>
+        <h2>Grupo de tercero</h2>
+        <div class="divider"></div>
+        <p class="subtitle">
+          El grupo más grande y quizá el más peligroso. Aquí cada historia tiene varias versiones.
+        </p>
+        <div class="grid" id="grid-tercero"></div>
+      </div>
+    </section>
+
+    <section id="pagina">
+      <div class="paper">
+        <div class="decor two">✧</div>
+        <h2>The secret society</h2>
+        <div class="divider"></div>
+        <p class="subtitle">
+          Voces, administradores, testigos y sombras detrás de cada publicación.
+        </p>
+        <div class="grid" id="grid-pagina"></div>
+
+        <div class="nota"> <center>
+          ¿Qué tanto crees conocer a una persona?
+          </center>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    The Secret Society · todos los secretos quedan escritos
+  </footer>
+
+  <script>
+    const personajesPrimero = [
+      { nombre: "Ellie Ikeyli", descripcion: "16 años. 165 cm. Leo. 10/08.", imagen: "Ellie.jpg" },
+      { nombre: "Lukas McKley", descripcion: "15 años. 147 cm. Capricornio. 14/01.", imagen: "Lukas.jpg" },
+      { nombre: "Erik Jones", descripcion: "15 años. 170 cm. Sagitario. 14/12.", imagen: "Erik.jpg" },
+      { nombre: "Maia", descripcion: "15 años. 147 cm. Leo. 10/08.", imagen: "Maia.jpg" },
+      { nombre: "Derek", descripcion: "15 años. 169 cm. Cáncer. 28/06.", imagen: "Derek.jpg" },
+      { nombre: "Leo Ross", descripcion: "15 años. 169 cm. Escorpio. 01/11.", imagen: "Leo.jpg" },
+      { nombre: "Amelie Jones", descripcion: "15 años. 162 cm. Piscis. Pnsexual. 23/03.", imagen: "Amelie.jpg" }
+    ];
+
+    const personajesSegundo = [
+      { nombre: "Sophie L. Carrasquillo", descripcion: "16 años. 170 cm. Acuario. 05/02.", imagen: "Sophie.jpg" },
+      { nombre: "Hannet O. Greensley", descripcion: "16 años. 163 cm. Géminis. Pansexual. 06/05.", imagen: "Hannet.jpg" },
+      { nombre: "Sarahí L. Hans", descripcion: "16 años. 157 cm. Libra. Pansexual. 14/10.", imagen: "Sarahí.jpg" },
+      { nombre: "Kesley P. Lictian", descripcion: "16 años. 168 cm. Cáncer. 20/06.", imagen: "Kesley.jpg" },
+      { nombre: "Tessa", descripcion: "16 años. 152 cm. Virgo. Pansexual. 25/08.", imagen: "Tessa.jpg" },
+      { nombre: "Mason", descripcion: "16 años. 179 cm. Libra. 27/09.", imagen: "Mason.jpg" },
+      { nombre: "Rhea", descripcion: "17 años. 176 cm. Cáncer. 10/07.", imagen: "Rhea.jpg" },
+      { nombre: "Zane Hunter", descripcion: "16 años. 177 cm. Aries. 01/04.", imagen: "Zane.jpg" },
+      { nombre: "Marcos Miller", descripcion: "17 años. 178 cm. Leo. Pansexual. 12/08.", imagen: "Marcos.jpg" },
+      { nombre: "Cora Peters", descripcion: "16 años. 149 cm. Acuario. 03/02.", imagen: "Cora.jpg" }
+    ];
+
+    const personajesTercero = [
+      { nombre: "Axel Brigest", descripcion: "17 años. Pansexual/Bisexual", imagen: "Axel.jpg" },
+      { nombre: "Amanda N. Hans", descripcion: "18 años. 150 cm. Sagitario. 21/12.", imagen: "Amanda.jpg" },
+      { nombre: "Zian Y. Brad", descripcion: "17 años. 178 cm. Escorpio. Bisexual. 18/11.", imagen: "Zian.jpg" },
+      { nombre: "Lyra Moore", descripcion: "18 años. 158 cm. Tauro. Lesbiana. 30/04.", imagen: "Lyra.jpg" },
+      { nombre: "Ever Jones", descripcion: "17 años. 153 cm. Piscis. Bisexual. 05/03.", imagen: "Ever.jpg" },
+      { nombre: "Kye Jones", descripcion: "18 años. 185 cm. Acuario. Bisexual. 23/01.", imagen: "Kye.jpg" },
+      { nombre: "Seth Cooper", descripcion: "17 años. 185 cm. Leo. 17/08.", imagen: "Seth.png" },
+      { nombre: "Kellan Wayne", descripcion: "17 años. 188 cm. Cáncer. Queer. 07/07.", imagen: "Kellan.png" },
+      { nombre: "Théodore", descripcion: "17 años. 187 cm. Acuario. 15/02.", imagen: "Theo.jpg" },
+      { nombre: "Noa", descripcion: "17 años. 175 cm. Tauro. Lesbiana. 27/04.", imagen: "Noa.jpg" },
+      { nombre: "Tobías", descripcion: "19 años. 185 cm. Capricornio. 05/01.", imagen: "Tobias.jpg" },
+      { nombre: "Yara", descripcion: "17 años. 173 cm. Aries. Lesbiana. 10/04.", imagen: "Yara.jpg" },
+      { nombre: "Abby", descripcion: "17 años. 156 cm. Cáncer. 08/07.", imagen: "Abby.jpg" },
+      { nombre: "Alessandro", descripcion: "18 años. 182 cm. Leo. Pansexual. 31/07.", imagen: "Alessandro.jpg" },
+      { nombre: "William", descripcion: "18 años. 178 cm. Géminis. Arromántico. 08/06.", imagen: "Will.jpg" },
+      { nombre: "Draven", descripcion: "17 años. 168 cm. Sagitario. 12/12.", imagen: "Draven.jpg" },
+      { nombre: "Kyana", descripcion: "17 años. 159 cm. Acuario. Bisexual. 28/01.", imagen: "Kyana.jpg" },
+      { nombre: "Soren", descripcion: "17 años. 181 cm. Géminis. Gay. 16/06.", imagen: "Soren.jpg" },
+      { nombre: "Juno Muller", descripcion: "17 años. 165 cm. Libra. Queer. 05/10.", imagen: "Juno.jpg" },
+      { nombre: "Jiro Dalton", descripcion: "17 años. 164 cm. Virgo. 14/09.", imagen: "Jiro.jpg" },
+      { nombre: "Joa", descripcion: "Historia en investigación.", imagen: "Joa.jpg" },
+      { nombre: "Miguel", descripcion: "Historia en investigación.", imagen: "Miguel.jpg" },
+      { nombre: "Mika Ikeyli", descripcion: "16 años. 145 cm. Sagitario. 05/12.", imagen: "Mika.jpg" },
+      { nombre: "Alex Davis", descripcion: "17 años. 160 cm. Capricornio. Pansexual. 08/01.", imagen: "Alex.jpg" },
+      { nombre: "Joss Clair", descripcion: "18 años. 160 cm. Virgo. Bisexual. 11/09.", imagen: "Joss.jpg" }
+    ];
+const personajesPagina = [
+  { nombre: "Archivo 1", descripcion: "Secreto filtrado.", imagen: "Uno.jpg" },
+  { nombre: "Archivo 2", descripcion: "Secreto filtrado.", imagen: "Dos.jpg" },
+  { nombre: "Archivo 3", descripcion: "Secreto filtrado.", imagen: "Tres.jpg" },
+  { nombre: "Archivo 4", descripcion: "Secreto filtrado.", imagen: "Cuatro.jpg" },
+  { nombre: "Archivo 5", descripcion: "Secreto filtrado.", imagen: "Cinco.jpg" },
+  { nombre: "Archivo 6", descripcion: "Secreto filtrado.", imagen: "Seis.jpg" },
+  { nombre: "Archivo 7", descripcion: "Secreto filtrado.", imagen: "Siete.jpg" },
+  { nombre: "Archivo 8", descripcion: "Secreto filtrado.", imagen: "Ocho.jpg" },
+  { nombre: "Archivo 9", descripcion: "Secreto filtrado.", imagen: "Nueve.jpg" },
+  { nombre: "Archivo 10", descripcion: "Secreto filtrado.", imagen: "Diez.jpg" },
+  { nombre: "Archivo 11", descripcion: "Secreto filtrado.", imagen: "Once.jpg" },
+  { nombre: "Archivo 12", descripcion: "Secreto filtrado.", imagen: "Doce.jpg" },
+  { nombre: "Archivo 13", descripcion: "Secreto filtrado.", imagen: "Trece.jpg" },
+  { nombre: "Archivo 14", descripcion: "Secreto filtrado.", imagen: "Catorce.jpg" },
+  { nombre: "Archivo 15", descripcion: "Secreto filtrado.", imagen: "Quince.jpg" },
+  { nombre: "Archivo 16", descripcion: "Secreto filtrado.", imagen: "Dieciseis.jpg" },
+  { nombre: "Archivo 17", descripcion: "Secreto filtrado.", imagen: "Diecisiete.jpg" },
+  { nombre: "Archivo 18", descripcion: "Secreto filtrado.", imagen: "Dieciocho.jpg" },
+  { nombre: "Archivo 19", descripcion: "Secreto filtrado.", imagen: "Diecinueve.jpg" },
+  { nombre: "Archivo 20", descripcion: "Secreto filtrado.", imagen: "Veinte.jpg" },
+  { nombre: "Archivo 21", descripcion: "Secreto filtrado.", imagen: "Veintiuno.jpg" },
+  { nombre: "Archivo 22", descripcion: "Secreto filtrado.", imagen: "Veintidos.jpg" },
+  { nombre: "Archivo 23", descripcion: "Secreto filtrado.", imagen: "Veintitres.jpg" },
+  { nombre: "Archivo 24", descripcion: "Secreto filtrado.", imagen: "Veinticuatro.jpg" },
+  { nombre: "Archivo 25", descripcion: "Secreto filtrado.", imagen: "Veinticinco.jpg" },
+  { nombre: "Archivo 26", descripcion: "Secreto filtrado.", imagen: "Veintiseis.jpg" },
+  { nombre: "Archivo 27", descripcion: "Secreto filtrado.", imagen: "Veintisiete.jpg" },
+  { nombre: "Archivo 28", descripcion: "Secreto filtrado.", imagen: "Veintiocho.jpg" },
+  { nombre: "Archivo 29", descripcion: "Secreto filtrado.", imagen: "Veintinueve.jpg" }
+];
+
+   
+    function crearTarjetas(lista, contenedorId) {
+      const contenedor = document.getElementById(contenedorId);
+
+      lista.forEach((personaje, index) => {
+        const card = document.createElement("article");
+        card.className = "card";
+        card.style.animationDelay = `${index * 0.035}s`;
+
+        card.innerHTML = `
+          <div class="photo">
+            ${
+              personaje.imagen
+                ? `<img src="${personaje.imagen}" alt="${personaje.nombre}">`
+                : `<span>Espacio para imagen</span>`
+            }
+          </div>
+          <h3>${personaje.nombre}</h3>
+          <p>${personaje.descripcion}</p>
+        `;
+
+        contenedor.appendChild(card);
+      });
+    }
+
+    crearTarjetas(personajesPrimero, "grid-primero");
+    crearTarjetas(personajesSegundo, "grid-segundo");
+    crearTarjetas(personajesTercero, "grid-tercero");
+    crearTarjetas(personajesPagina, "grid-pagina");
+  </script>
+</body>
+</html>
