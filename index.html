@@ -293,7 +293,6 @@
       display: block;
     }
 
-    /* Ajuste especial para el cuarto apartado: The secret society */
     #pagina .grid {
       grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
@@ -339,6 +338,23 @@
       line-height: 1.7;
       position: relative;
       z-index: 3;
+    }
+
+    .boton-redes {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 11px 18px;
+      color: var(--papel);
+      background: var(--vino);
+      text-decoration: none;
+      border-radius: 999px;
+      border: 1px solid rgba(59, 33, 27, 0.25);
+      transition: 0.3s;
+    }
+
+    .boton-redes:hover {
+      background: var(--cafe-oscuro);
+      transform: translateY(-2px);
     }
 
     footer {
@@ -447,6 +463,7 @@
         <a href="#segundo">2do</a>
         <a href="#tercero">3ro</a>
         <a href="#pagina">Página</a>
+        <a href="redes.html">Redes</a>
       </div>
     </nav>
   </header>
@@ -473,7 +490,8 @@
           REDES:<br>
           IG - thesecretsociety<br>
           FC - TheSecretSociety<br>
-          TIKTOK - Rooseveltsecrets
+          TIKTOK - Rooseveltsecrets<br><br>
+          <a class="boton-redes" href="redes.html">Entrar a las redes</a>
         </div>
       </div>
     </section>
@@ -524,9 +542,8 @@
         </p>
         <div class="grid" id="grid-pagina"></div>
 
-        <div class="nota"> <center>
-          ¿Qué tanto crees conocer a una persona?
-          </center>
+        <div class="nota">
+          <center>¿Qué tanto crees conocer a una persona?</center>
         </div>
       </div>
     </section>
@@ -550,7 +567,7 @@
     const personajesSegundo = [
       { nombre: "Sophie L. Carrasquillo", descripcion: "16 años. 170 cm. Acuario. 05/02.", imagen: "Sophie.jpg" },
       { nombre: "Hannet O. Greensley", descripcion: "16 años. 163 cm. Géminis. Pansexual. 06/05.", imagen: "Hannet.jpg" },
-      { nombre: "Sarahí L. Hans", descripcion: "16 años. 157 cm. Libra. Pansexual. 14/10.", imagen: "Sarahí.jpg" },
+      { nombre: "Sarahí L. Hans", descripcion: "16 años. 157 cm. Libra. Pansexual. 14/10.", imagen: "Sarahi.PNG" },
       { nombre: "Kesley P. Lictian", descripcion: "16 años. 168 cm. Cáncer. 20/06.", imagen: "Kesley.jpg" },
       { nombre: "Tessa", descripcion: "16 años. 152 cm. Virgo. Pansexual. 25/08.", imagen: "Tessa.jpg" },
       { nombre: "Mason", descripcion: "16 años. 179 cm. Libra. 27/09.", imagen: "Mason.jpg" },
@@ -587,39 +604,40 @@
       { nombre: "Alex Davis", descripcion: "17 años. 160 cm. Capricornio. Pansexual. 08/01.", imagen: "Alex.jpg" },
       { nombre: "Joss Clair", descripcion: "18 años. 160 cm. Virgo. Bisexual. 11/09.", imagen: "Joss.jpg" }
     ];
-const personajesPagina = [
-  { nombre: "Archivo 1", descripcion: "Secreto filtrado.", imagen: "Uno.jpg" },
-  { nombre: "Archivo 2", descripcion: "Secreto filtrado.", imagen: "Dos.jpg" },
-  { nombre: "Archivo 3", descripcion: "Secreto filtrado.", imagen: "Tres.jpg" },
-  { nombre: "Archivo 4", descripcion: "Secreto filtrado.", imagen: "Cuatro.jpg" },
-  { nombre: "Archivo 5", descripcion: "Secreto filtrado.", imagen: "Cinco.jpg" },
-  { nombre: "Archivo 6", descripcion: "Secreto filtrado.", imagen: "Seis.jpg" },
-  { nombre: "Archivo 7", descripcion: "Secreto filtrado.", imagen: "Siete.jpg" },
-  { nombre: "Archivo 8", descripcion: "Secreto filtrado.", imagen: "Ocho.jpg" },
-  { nombre: "Archivo 9", descripcion: "Secreto filtrado.", imagen: "Nueve.jpg" },
-  { nombre: "Archivo 10", descripcion: "Secreto filtrado.", imagen: "Diez.jpg" },
-  { nombre: "Archivo 11", descripcion: "Secreto filtrado.", imagen: "Once.jpg" },
-  { nombre: "Archivo 12", descripcion: "Secreto filtrado.", imagen: "Doce.jpg" },
-  { nombre: "Archivo 13", descripcion: "Secreto filtrado.", imagen: "Trece.jpg" },
-  { nombre: "Archivo 14", descripcion: "Secreto filtrado.", imagen: "Catorce.jpg" },
-  { nombre: "Archivo 15", descripcion: "Secreto filtrado.", imagen: "Quince.jpg" },
-  { nombre: "Archivo 16", descripcion: "Secreto filtrado.", imagen: "Dieciseis.jpg" },
-  { nombre: "Archivo 17", descripcion: "Secreto filtrado.", imagen: "Diecisiete.jpg" },
-  { nombre: "Archivo 18", descripcion: "Secreto filtrado.", imagen: "Dieciocho.jpg" },
-  { nombre: "Archivo 19", descripcion: "Secreto filtrado.", imagen: "Diecinueve.jpg" },
-  { nombre: "Archivo 20", descripcion: "Secreto filtrado.", imagen: "Veinte.jpg" },
-  { nombre: "Archivo 21", descripcion: "Secreto filtrado.", imagen: "Veintiuno.jpg" },
-  { nombre: "Archivo 22", descripcion: "Secreto filtrado.", imagen: "Veintidos.jpg" },
-  { nombre: "Archivo 23", descripcion: "Secreto filtrado.", imagen: "Veintitres.jpg" },
-  { nombre: "Archivo 24", descripcion: "Secreto filtrado.", imagen: "Veinticuatro.jpg" },
-  { nombre: "Archivo 25", descripcion: "Secreto filtrado.", imagen: "Veinticinco.jpg" },
-  { nombre: "Archivo 26", descripcion: "Secreto filtrado.", imagen: "Veintiseis.jpg" },
-  { nombre: "Archivo 27", descripcion: "Secreto filtrado.", imagen: "Veintisiete.jpg" },
-  { nombre: "Archivo 28", descripcion: "Secreto filtrado.", imagen: "Veintiocho.jpg" },
-  { nombre: "Archivo 29", descripcion: "Secreto filtrado.", imagen: "Veintinueve.jpg" }
-];
 
-   
+    const personajesPagina = [
+      { nombre: "Archivo 1", descripcion: "Secreto filtrado.", imagen: "Uno.jpg" },
+      { nombre: "Archivo 2", descripcion: "Secreto filtrado.", imagen: "Dos.jpg" },
+      { nombre: "Archivo 3", descripcion: "Secreto filtrado.", imagen: "Tres.jpg" },
+      { nombre: "Archivo 4", descripcion: "Secreto filtrado.", imagen: "Cuatro.jpg" },
+      { nombre: "Archivo 5", descripcion: "Secreto filtrado.", imagen: "Cinco.jpg" },
+      { nombre: "Archivo 6", descripcion: "Secreto filtrado.", imagen: "Seis.jpg" },
+      { nombre: "Archivo 7", descripcion: "Secreto filtrado.", imagen: "Siete.jpg" },
+      { nombre: "Archivo 8", descripcion: "Secreto filtrado.", imagen: "Ocho.jpg" },
+      { nombre: "Archivo 9", descripcion: "Secreto filtrado.", imagen: "Nueve.jpg" },
+      { nombre: "Archivo 10", descripcion: "Secreto filtrado.", imagen: "Diez.jpg" },
+      { nombre: "Archivo 11", descripcion: "Secreto filtrado.", imagen: "Once.jpg" },
+      { nombre: "Archivo 12", descripcion: "Secreto filtrado.", imagen: "Doce.jpg" },
+      { nombre: "Archivo 13", descripcion: "Secreto filtrado.", imagen: "Trece.jpg" },
+      { nombre: "Archivo 14", descripcion: "Secreto filtrado.", imagen: "Catorce.jpg" },
+      { nombre: "Archivo 15", descripcion: "Secreto filtrado.", imagen: "Quince.jpg" },
+      { nombre: "Archivo 16", descripcion: "Secreto filtrado.", imagen: "Dieciseis.jpg" },
+      { nombre: "Archivo 17", descripcion: "Secreto filtrado.", imagen: "Diecisiete.jpg" },
+      { nombre: "Archivo 18", descripcion: "Secreto filtrado.", imagen: "Dieciocho.jpg" },
+      { nombre: "Archivo 19", descripcion: "Secreto filtrado.", imagen: "Diecinueve.jpg" },
+      { nombre: "Archivo 20", descripcion: "Secreto filtrado.", imagen: "Veinte.jpg" },
+      { nombre: "Archivo 21", descripcion: "Secreto filtrado.", imagen: "Veintiuno.jpg" },
+      { nombre: "Archivo 22", descripcion: "Secreto filtrado.", imagen: "Veintidos.jpg" },
+      { nombre: "Archivo 23", descripcion: "Secreto filtrado.", imagen: "Veintitres.jpg" },
+      { nombre: "Archivo 24", descripcion: "Secreto filtrado.", imagen: "Veinticuatro.jpg" },
+      { nombre: "Archivo 25", descripcion: "Secreto filtrado.", imagen: "Veinticinco.jpg" },
+      { nombre: "Archivo 26", descripcion: "Secreto filtrado.", imagen: "Veintiseis.jpg" },
+      { nombre: "Archivo 27", descripcion: "Secreto filtrado.", imagen: "Veintisiete.jpg" },
+      { nombre: "Archivo 28", descripcion: "Secreto filtrado.", imagen: "Veintiocho.jpg" },
+      { nombre: "Archivo 29", descripcion: "Secreto filtrado.", imagen: "Veintinueve.jpg" },
+        { nombre: "Archivo 30", descripcion: "Secreto filtrado.", imagen: "treinta.png" }
+    ];
+
     function crearTarjetas(lista, contenedorId) {
       const contenedor = document.getElementById(contenedorId);
 
