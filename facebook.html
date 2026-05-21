@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Facebook | The Secret Society</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f0f2f5;color:#111}
+.top{height:56px;background:white;display:flex;align-items:center;gap:16px;padding:0 16px;box-shadow:0 1px 4px #ccc;position:sticky;top:0;z-index:5}
+.logo{font-size:34px;color:#1877f2;font-weight:700}
+.search{background:#eef0f3;border-radius:24px;padding:12px 18px;color:#666;width:240px}
+.layout{display:grid;grid-template-columns:280px 1fr 320px;gap:24px;padding:18px}
+.left,.right{position:sticky;top:78px;height:calc(100vh - 90px)}
+.menu div,.menu a{display:block;padding:13px;font-size:17px;color:#111;text-decoration:none}
+.feed{max-width:680px;margin:auto}
+.composer,.post{background:white;border-radius:10px;box-shadow:0 1px 3px #d0d0d0;margin-bottom:16px}
+.composer{padding:14px;display:flex;gap:12px;align-items:center}
+.avatar{width:42px;height:42px;border-radius:50%;object-fit:cover}
+.input{background:#f0f2f5;border-radius:25px;padding:13px;color:#666;flex:1}
+.slider-wrap{position:relative;margin-bottom:16px}
+.stories{display:flex;gap:10px;overflow:hidden;scroll-behavior:smooth;padding:4px 44px}
+.story{min-width:120px;height:190px;border-radius:10px;overflow:hidden;position:relative;background:#ddd;flex:0 0 auto}
+.story img{width:100%;height:100%;object-fit:cover}
+.story span{position:absolute;bottom:10px;left:9px;color:white;font-weight:700;text-shadow:0 2px 4px #000}
+.slider-btn{position:absolute;top:80px;z-index:5;width:34px;height:34px;border:0;border-radius:50%;background:white;box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;font-size:20px}
+.slider-btn.left{left:4px}.slider-btn.right{right:4px}
+.post{overflow:hidden}
+.post-head{display:flex;align-items:center;gap:10px;padding:14px}
+.name{font-weight:700}.date{font-size:13px;color:#666}
+.text{padding:0 14px 12px;line-height:1.45;white-space:pre-line}
+.post-img{width:100%;max-height:620px;object-fit:contain;background:#111}
+.actions{display:flex;justify-content:space-around;padding:12px;border-top:1px solid #eee;color:#555;font-weight:700}
+.ad{background:white;border-radius:10px;padding:12px;margin-bottom:16px}
+.ad img{width:100%;border-radius:8px}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.left,.right{display:none}.search{width:auto}.feed{width:100%}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="logo">f</div>
+  <div class="search">Buscar en Facebook</div>
+</header>
+
+<div class="layout">
+  <aside class="left">
+    <div class="menu">
+      <div>Inicio</div><div>Amigos</div><div>Recuerdos</div><div>Guardado</div><div>Grupos</div>
+      <a href="redes.html">Volver a redes</a>
+    </div>
+  </aside>
+
+  <main class="feed">
+    <section class="composer">
+      <img class="avatar" src="Seth.png">
+      <div class="input">¿Qué está pensando The Secret Society?</div>
+    </section>
+
+    <div class="slider-wrap">
+      <button class="slider-btn left" onclick="moverStories(-1)">‹</button>
+      <section class="stories" id="stories"></section>
+      <button class="slider-btn right" onclick="moverStories(1)">›</button>
+    </div>
+
+    <section id="posts"></section>
+  </main>
+
+  <aside class="right">
+    <div class="ad"><b>Sugerencias para ti</b><br><br><img src="Ellief.PNG"></div>
+    <div class="ad"><b>Personas que quizá conozcas</b><br><br>Axel Brigest · Marcos Miller · Ellie Ikeyli</div>
+  </aside>
+</div>
+
+<script>
+const perfiles = [
+  { nombre:"@sethcooper", avatar:"Seth.png", posts:["HS.jpg","juegosdelhambre.jpg","camara.jpg"], caption:"There is a light that never goes out 🥀" },
+  { nombre:"@zz_1ian", avatar:"zzian.PNG", posts:[], caption:"Alguien dijo que no pasó nada, pero las pruebas cuentan otra historia." },
+  { nombre:"@IIIIIIrandomboy", avatar:"Lukasf.PNG", posts:[], caption:"" },
+  { nombre:"@jstleeaavmee", avatar:"Mikaf.PNG", posts:[], caption:"" },
+  { nombre:"@namedsara_", avatar:"Sarahif.PNG", posts:[], caption:"Do you know this guy?" },
+  { nombre:"@lovely.R", avatar:"Rheaf.PNG", posts:[], caption:"" },
+  { nombre:"@dr_0g", avatar:"Theof.PNG", posts:[], caption:"" },
+  { nombre:"@t3ss_kys", avatar:"Tessaf.PNG", posts:[], caption:"" },
+  { nombre:"Joan(˶˃ ᵕ ˂˶)", avatar:"Joaf.PNG", posts:["Joap1.PNG","Joap2.PNG","Joap3.PNG"], caption:"" },
+  { nombre:"@KES", avatar:"Kesleyf.PNG", posts:["Kesleyp1.PNG"], caption:"" },
+  { nombre:"@axxelitouwuww", avatar:"Axelf.PNG", posts:["Axelp1.PNG"], caption:"" },
+  { nombre:"@lm00re_", avatar:"Lyraf.PNG", posts:["Lyrap1.PNG","Lyrap2.PNG","Lyrap3.PNG"], caption:"" },
+  { nombre:"@butterfly1", avatar:"Ellief.PNG", posts:["Elliep1.PNG"], caption:"" },
+  { nombre:"@amandacristobal", avatar:"Amandaf.PNG", posts:["Amandap1.PNG","Amandap2.PNG","Amandap3.PNG"], caption:"" },
+  { nombre:"@h4nn7ttt", avatar:"Hannetf.PNG", posts:["Hannetp1.PNG","Hannetp2.PNG","Hannetp3.PNG"], caption:"" },
+  { nombre:"@aliveangel33", avatar:"Miguelf.PNG", posts:["Miguelp1.PNG","Miguelp2.PNG"], caption:"" },
+  { nombre:"@By_JiroDtn", avatar:"Jiro.jpg", posts:["Jirop1.PNG","Jirop2.PNG","Jirop3.PNG"], caption:"" },
+  { nombre:"@Zhunt", avatar:"Zanef.PNG", posts:["Zanep1.PNG","Zanep2.PNG","Zanep3.PNG"], caption:"" },
+  { nombre:"@Kya-Nya", avatar:"Kyanaf.PNG", posts:["Kyanap1.PNG","Kyanap2.PNG","Kyanap3.PNG"], caption:"" },
+  { nombre:"@𝖇𝖆𝖇𝖇𝖞_𝖙𝖆𝖑𝖐𝖎𝖓𝖌", avatar:"Sorenf.PNG", posts:["Sorenp1.PNG","Sorenp2.PNG","Sorenp3.PNG"], caption:"" },
+  { nombre:"@𝓶𝓪𝓲.𝓾𝔀𝓾", avatar:"Maiaf.PNG", posts:["Maiap1.PNG","Maiap2.PNG","Maiap3.PNG"], caption:"" },
+  { nombre:"@KyJs", avatar:"Kye.jpg", posts:["Kyep1.PNG","Kyep2.PNG","Kyep3.PNG"], caption:"" },
+  { nombre:"Evv_Hunt", avatar:"Everf.PNG", posts:[], caption:"" },
+  { nombre:"@erik_j0nes", avatar:"Erik.jpg", posts:["Erikp1.PNG","Erikp2.PNG","Erikp3.PNG"], caption:"" },
+  { nombre:"@Pters🥀", avatar:"Cora.jpg", posts:["Corap1.PNG","Corap2.PNG","Corap3.PNG"], caption:"" },
+  { nombre:"@Kllnw_", avatar:"Kellan.png", posts:["Kellanp1.PNG","Kellanp2.PNG","Kellanp3.PNG"], caption:"" },
+  { nombre:"@Leex_DS", avatar:"Alexf.PNG", posts:["Alexp1.PNG","Alexp2.PNG","Alexp3.PNG"], caption:"" },
+  { nombre:"@Le0_RsS", avatar:"Leof.PNG", posts:["Leop1.PNG","Leop2.PNG","Leop3.PNG"], caption:"" },
+  { nombre:"@Reed_clk", avatar:"Jossf.PNG", posts:["Jossp1.PNG","Jossp2.PNG","Jossp3.PNG"], caption:"" },
+  { nombre:"@Mull3r_02", avatar:"Junof.PNG", posts:[], caption:"" },
+  { nombre:"@Amelie", avatar:"Amelief.PNG", posts:["Ameliep1.PNG","Ameliep2.PNG","Ameliep3.PNG"], caption:"" },
+  { nombre:"@Alessandro", avatar:"Alessandrof.PNG", posts:["Alessandrop1.PNG","Alessandrop2.PNG","Alessandrop3.PNG"], caption:"" },
+  { nombre:"@Mrcs_d", avatar:"Marcosf.PNG", posts:[], caption:"" }
+];
+
+const stories = document.getElementById("stories");
+perfiles.forEach((perfil, i) => {
+  stories.innerHTML += `
+    <div class="story">
+      <img src="${perfil.avatar}" alt="${perfil.nombre}">
+      <span>${perfil.nombre}</span>
+    </div>
+  `;
+});
+
+const posts = document.getElementById("posts");
+perfiles.filter(p => p.posts.length > 0).forEach((perfil, i) => {
+  posts.innerHTML += `
+    <article class="post">
+      <div class="post-head">
+        <img class="avatar" src="${perfil.avatar}">
+        <div><div class="name">${perfil.nombre}</div><div class="date">Hace ${i + 1} h · Público</div></div>
+      </div>
+      ${perfil.caption ? `<p class="text">${perfil.caption}</p>` : ""}
+      <img class="post-img" src="${perfil.posts[0]}" alt="Publicación de ${perfil.nombre}">
+      <div class="actions"><span>Me gusta</span><span>Comentar</span><span>Compartir</span></div>
+    </article>
+  `;
+});
+
+function moverStories(direccion){
+  document.getElementById("stories").scrollLeft += direccion * 260;
+}
+</script>
+</body>
+</html>

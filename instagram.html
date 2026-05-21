@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram | The Secret Society</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#fff;color:#111}
+.layout{display:grid;grid-template-columns:245px 1fr 320px;min-height:100vh}
+.sidebar{border-right:1px solid #ddd;padding:24px;position:sticky;top:0;height:100vh}
+.logo{font-size:28px;font-weight:700;margin-bottom:38px}
+.nav a,.nav button{display:block;color:#111;text-decoration:none;font-size:17px;padding:14px 0;background:none;border:0;cursor:pointer;text-align:left;width:100%}
+.feed{max-width:760px;margin:0 auto;padding:22px;width:100%}
+.slider-wrap{position:relative;margin-bottom:34px}
+.stories{display:flex;gap:16px;overflow:hidden;scroll-behavior:smooth;padding:4px 44px}
+.story{width:78px;text-align:center;font-size:12px;flex:0 0 auto;color:#111;text-decoration:none}
+.story .circle{width:70px;height:70px;border-radius:50%;padding:3px;background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7);margin:auto}
+.story img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:3px solid white}
+.slider-btn{position:absolute;top:28px;z-index:5;width:30px;height:30px;border:0;border-radius:50%;background:rgba(255,255,255,.95);box-shadow:0 2px 8px rgba(0,0,0,.18);cursor:pointer;font-size:18px}
+.slider-btn.left{left:4px}
+.slider-btn.right{right:4px}
+.post{border-bottom:1px solid #ddd;padding-bottom:30px;margin-bottom:34px}
+.post-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.avatar{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.user{font-weight:700;cursor:pointer}.time{color:#777;font-weight:400}
+.post-img{width:100%;aspect-ratio:1/1;background:#eee;border-radius:4px;object-fit:cover;cursor:pointer}
+.actions{display:flex;gap:16px;font-size:27px;margin:12px 0}
+.caption{line-height:1.45;font-size:15px}
+.side{padding:36px 20px;color:#555}
+.suggestion{display:flex;align-items:center;gap:12px;margin:18px 0}
+.suggestion img{width:44px;height:44px;border-radius:50%;object-fit:cover}
+.back{position:fixed;bottom:18px;left:24px;color:#111;text-decoration:none;font-weight:700}
+
+.profile{max-width:940px;margin:auto}
+.profile-top{display:grid;grid-template-columns:170px 1fr;gap:42px;align-items:center;border-bottom:1px solid #ddd;padding:24px 0 38px}
+.profile-avatar{width:150px;height:150px;border-radius:50%;padding:4px;background:linear-gradient(45deg,#f9ce34,#ee2a7b,#6228d7)}
+.profile-avatar img{width:100%;height:100%;border-radius:50%;object-fit:cover;border:4px solid #fff}
+.profile-name{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+.profile-name h1{font-size:26px;font-weight:400}
+.profile-name button{border:0;background:#efefef;border-radius:8px;padding:8px 14px;font-weight:700}
+.stats{display:flex;gap:28px;margin-bottom:18px}
+.stats span{font-size:16px}
+.bio{line-height:1.45}
+.bio b{display:block}
+.highlights{display:flex;gap:22px;margin:26px 0}
+.highlight{text-align:center;font-size:13px}
+.highlight div{width:72px;height:72px;border-radius:50%;border:1px solid #bbb;padding:3px;margin-bottom:6px}
+.highlight img{width:100%;height:100%;border-radius:50%;object-fit:cover}
+.tabs{display:flex;justify-content:center;gap:70px;border-top:1px solid #ddd;margin-top:18px}
+.tabs span{padding:16px 0;font-size:13px;font-weight:700;color:#555}
+.grid-posts{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.grid-post{aspect-ratio:1/1;position:relative;overflow:hidden;background:#eee;cursor:pointer}
+.grid-post img{width:100%;height:100%;object-fit:cover;transition:.3s}
+.grid-post:hover img{filter:brightness(.55);transform:scale(1.04)}
+.grid-post::after{content:"♡  1.2K   💬  48";position:absolute;inset:0;display:grid;place-items:center;color:white;font-weight:700;opacity:0;transition:.25s}
+.grid-post:hover::after{opacity:1}
+
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.68);z-index:100;display:none;align-items:center;justify-content:center;padding:24px}
+.modal.open{display:flex}
+.modal-card{width:min(1180px,100%);height:min(760px,92vh);background:white;display:grid;grid-template-columns:1.25fr .75fr;border-radius:4px;overflow:hidden}
+.modal-image{background:#000;display:grid;place-items:center}
+.modal-image img{width:100%;height:100%;object-fit:contain}
+.modal-info{display:flex;flex-direction:column;min-width:0}
+.modal-head{display:flex;align-items:center;gap:10px;padding:16px;border-bottom:1px solid #eee}
+.modal-head img{width:40px;height:40px;border-radius:50%;object-fit:cover}
+.modal-comments{padding:16px;overflow:auto;flex:1}
+.comment{display:grid;grid-template-columns:36px 1fr;gap:10px;margin-bottom:18px;font-size:14px;line-height:1.4}
+.comment img{width:36px;height:36px;border-radius:50%;object-fit:cover}
+.comment b{margin-right:5px}
+.modal-bottom{border-top:1px solid #eee;padding:14px}
+.modal-actions{font-size:26px;display:flex;gap:14px;margin-bottom:10px}
+.modal-close{position:absolute;right:20px;top:16px;background:white;border:0;width:38px;height:38px;border-radius:50%;font-size:24px;cursor:pointer}
+
+.hidden{display:none}
+
+@media(max-width:1000px){
+.layout{grid-template-columns:1fr}
+.sidebar,.side{display:none}
+.feed{padding:16px}
+.back{position:static;display:block;margin:20px}
+.modal-card{grid-template-columns:1fr;height:90vh}
+.modal-info{max-height:42vh}
+.profile-top{grid-template-columns:1fr;text-align:center;gap:18px}
+.profile-avatar{margin:auto}
+.profile-name,.stats{justify-content:center}
+}
+
+@media(max-width:650px){
+.grid-posts{gap:2px}
+.highlights{overflow:auto}
+.tabs{gap:36px}
+}
+</style>
+</head>
+
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="logo">Instagram</div>
+    <nav class="nav">
+      <button onclick="mostrarInicio()">Inicio</button>
+      <a href="#">Buscar</a>
+      <a href="#">Explorar</a>
+      <a href="#">Mensajes</a>
+      <a href="#">Perfil</a>
+      <a href="redes.html">Volver a redes</a>
+    </nav>
+  </aside>
+
+  <main class="feed">
+    <section id="inicioView">
+      <div class="slider-wrap">
+        <button class="slider-btn left" onclick="moverStories(-1)">‹</button>
+        <div class="stories" id="stories"></div>
+        <button class="slider-btn right" onclick="moverStories(1)">›</button>
+      </div>
+
+      <div id="posts"></div>
+    </section>
+
+    <section id="perfilView" class="hidden"></section>
+  </main>
+
+  <aside class="side">
+    <b>Sugerencias para ti</b>
+    <div class="suggestion"><img src="Ellie.jpg"><span>Ellie Ikeyli</span></div>
+    <div class="suggestion"><img src="Axel.jpg"><span>Axel Brigest</span></div>
+    <div class="suggestion"><img src="Marcos.jpg"><span>Marcos Miller</span></div>
+  </aside>
+</div>
+
+<a class="back" href="redes.html">Volver a redes</a>
+
+<div class="modal" id="modal" onmouseleave="cerrarModal()">
+  <button class="modal-close" onclick="cerrarModal()">×</button>
+  <div class="modal-card">
+    <div class="modal-image">
+      <img id="modalImg" src="Uno.jpg" alt="Publicación">
+    </div>
+
+    <div class="modal-info">
+      <div class="modal-head">
+        <img id="modalAvatar" src="Uno.jpg" alt="Perfil">
+        <b id="modalUser">archivo_1</b>
+      </div>
+
+      <div class="modal-comments" id="modalComments"></div>
+
+      <div class="modal-bottom">
+        <div class="modal-actions">♡ 💬 ↗ ☆</div>
+        <p><b>Les gusta a archivo_7 y 1,235 personas más</b></p>
+        <p style="color:#777;margin-top:8px;font-size:13px">Hace 15 horas</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const perfiles = [
+  {
+    id: "@Seth Cooper",
+    nombre: "sethcooper",
+    avatar: "Seth.png",
+    bio: "@h4nn7ttt <br> Please, please, please, let me get what i want",
+   publicaciones: "36",
+    seguidores: "803",
+  siguiendo: "68",
+    posts: ["HS.jpg","juegosdelhambre.jpg","camara.jpg"]
+  },
+ {
+    id: "@zz_1ian",
+    nombre: "zz_1ian",
+    avatar: "zzian.PNG",
+    bio: "drugs <br> #kanyewest <br> 𝔒𝔫𝔢 𝔤𝔬𝔬𝔡 𝔤𝔦𝔯𝔩 𝔦𝔰 𝔴𝔬𝔯𝔱𝔥 𝔪𝔬𝔯𝔢 𝔱𝔥𝔞𝔫 𝔞 𝔱𝔥𝔬𝔲𝔰𝔞𝔫𝔡 𝔟𝔦𝔱𝔠𝔥𝔢𝔰! 🎸 ",
+    publicaciones: "0",
+    seguidores: "893",
+  siguiendo: "54",
+    posts: []
+  },
+  {
+    id: "@IIIIIIrandomboy",
+    nombre: "IIIIIIrandomboy",
+    avatar: "Lukasf.PNG",
+    bio: "𝙏𝘩𝘦𝘳𝘦 𝘪𝘴 𝘯𝘰 𝘴𝘩𝘢𝘮𝘦 𝘪𝘯 𝘣𝘦𝘪𝘯𝘨 𝘸𝘦𝘢𝘬. 𝙏𝘩𝘦 𝘴𝘩𝘢𝘮𝘦 𝘪𝘴 𝘪𝘯 𝘴𝘵𝘢𝘺𝘪𝘯𝘨 𝘸𝘦𝘢𝘬.",
+    posts: [],
+     publicaciones: "0",
+    seguidores: "88",
+  siguiendo: "25"
+  },
+  {
+    id: "@jstleeaavmee",
+    nombre: "jstleeaavmee",
+    avatar: "Mikaf.PNG",
+    bio: "𝙔𝙤𝙪 𝙖𝙧𝙚 𝙗𝙤𝙧𝙣 𝙖𝙡𝙤𝙣𝙚, <br> 𝙖𝙣𝙙 𝙮𝙤𝙪 𝙬𝙞𝙡𝙡 𝙙𝙞𝙚 𝙖𝙡𝙤𝙣𝙚.",
+    posts: [],
+     publicaciones: "0",
+    seguidores: "115",
+  siguiendo: "370"
+  },
+  {
+    id: "@namedsara_",
+    nombre: "namedsara_",
+    avatar: "Sarahif.PNG",
+    bio: "woman <br> idk",
+    posts: [],
+    publicaciones: "0",
+    seguidores: "410",
+  siguiendo: "28"
+  },
+  {
+    id: "Rhea",
+    nombre: "@lovely.R",
+    avatar: "Rheaf.PNG",
+    bio: "Si",
+    posts: [],
+    publicaciones: "0",
+    seguidores: "53",
+  siguiendo: "224"
+  },
+  {
+    id: "théo",
+    nombre: "@dr_0g",
+    avatar: "Theof.PNG",
+    bio: "🌿DM",
+    posts: [],
+    publicaciones: "0",
+    seguidores: "1,597",
+  siguiendo: "23"
+  },
+  {
+    id: "@t3ss_kys",
+    nombre: "@t3ss_kys",
+    avatar: "Tessaf.PNG",
+    bio: "🚫♀️",
+    posts: [],
+    publicaciones: "0",
+    seguidores: "387",
+  siguiendo: "26"
+  },
+  {
+    id: "@j0j$j0aa",
+    nombre: "Joan(˶˃ ᵕ ˂˶)",
+    avatar: "Joaf.PNG",
+    bio: "𝖲𝖧𝖤/𝖧𝖤/𝖳𝖧𝖤𝖸 <br> # 𝐁𝐋𝐀𝐂𝐊 𝐁𝐄𝐀𝐔𝐓𝐘 <br> <br> dm - info !",
+    posts: ["Joap1.PNG","Joap2.PNG","Joap3.PNG"],
+     publicaciones: "6",
+    seguidores: "2,485",
+  siguiendo: "354"
+  },
+  {
+    id: "@kqslei",
+    nombre: "KES",
+    avatar: "Kesleyf.PNG",
+    bio: "𝑩𝒐𝒓𝒏 𝒕𝒐 𝒅𝒊𝒆.",
+    posts: ["Kesleyp1.PNG"],
+     publicaciones: "1",
+    seguidores: "415",
+  siguiendo: "22"
+  },
+  {
+    id: "Axel XD",
+    nombre: "@axxelitouwuww",
+    avatar: "Axelf.PNG",
+    bio: "brrrrr skibidi dop dop dop dop,, yes yes yes skibidi <br> TENGO 17 AÑOS",
+    posts: ["Axelp1.PNG"],
+     publicaciones: "1",
+    seguidores: "1,850",
+  siguiendo: "5,604"
+  },
+  {
+    id: "Moore",
+    nombre: "@lm00re_",
+    avatar: "Lyraf.PNG",
+    bio: "𝔅𝔞𝔟𝔶-𝔅𝔞𝔟𝔶, ℑ'𝔪 𝔞 𝔣𝔯𝔢𝔞𝔨 <br> ʰᵉʳᵉ ᶜᵒᵐᵉˢ ᵗʰᵉ ˢᵘⁿ",
+    posts: ["Lyrap1.PNG","Lyrap2.PNG","Lyrap3.PNG"],
+      publicaciones: "24",
+    seguidores: "942",
+  siguiendo: "446"
+  },
+  {
+    id: "E L I <3",
+    nombre: "@butterfly1",
+    avatar: "Ellief.PNG",
+    bio: "Leer <br> @jstleeaavmee <br> 𝓫𝓸𝓸𝓴𝓼𝓫𝓸𝓸𝓴𝓼",
+    posts: ["Elliep1.PNG"],
+    publicaciones: "1",
+    seguidores: "520",
+  siguiendo: "115"
+  },
+  {
+    id: "Nara",
+    nombre: "@amandacristobal",
+    avatar: "Amandaf.PNG",
+    bio: "𝖽𝗋𝖾𝖺𝗆𝗌 𝖻𝖾𝖼𝗈𝗆𝖾 𝗍𝗋𝗎𝖾 ✨",
+    posts: ["Amandap1.PNG", "Amandap2.PNG", "Amandap3.PNG"],
+    publicaciones: "3",
+    seguidores: "860",
+  siguiendo: "441"
+  },
+  {
+    id: "𝖍𝖆𝖓 ;",
+    nombre: "@h4nn7ttt",
+    avatar: "Hannetf.PNG",
+    bio: "coolgirlheh <br> i´m married with my bf ! <br> 𝒻𝒶𝓃𝒶𝓉𝒾𝒸 𝑜𝒻 @lanadelrey <br> 𝒶𝓃𝒹 𝒻𝒶𝓃 #1 𝑜𝒻 @momofhannet <3 ",
+    posts: ["Hannetp1.PNG","Hannetp2.PNG","Hannetp3.PNG"],
+    publicaciones: "3",
+    seguidores: "1,642",
+  siguiendo: "154"
+  },
+  {
+    id: "migue :3",
+    nombre: "@aliveangel33",
+    avatar: "Miguelf.PNG",
+    bio: "no me hablen, tengo novia",
+    posts: ["Miguelp1.PNG","Miguelp2.PNG"],
+    publicaciones: "2",
+    seguidores: "255",
+  siguiendo: "5"
+  },
+  {
+    id: "Jiro0",
+    nombre: "@By_JiroDtn",
+    avatar: "Jiro.jpg",
+    bio: "𝐚𝐥𝐰𝐚𝐲𝐬 𝐝𝐨𝐢𝐧𝐠 𝐬𝐨𝐦𝐞𝐭𝐡𝐢𝐧𝐠 <br> 𝚙𝚛𝚘𝚋𝚊𝚋𝚕𝚢 𝚍𝚊𝚗𝚌𝚒𝚗𝚐",
+    posts: ["Jirop1.PNG","Jirop2.PNG","Jirop3.PNG", "Jirop4.PNG", "Jirop5.PNG", "Jirop6.PNG"],
+      publicaciones: "275",
+    seguidores: "1,986",
+  siguiendo: "1"
+  },
+  {
+    id: "Z A N E",
+    nombre: "@Zhunt",
+    avatar: "Zanef.PNG",
+    bio: "ʟɪꜰᴇ ɪꜱ ᴀ ᴘᴇʀꜰᴏʀᴍᴀɴᴄᴇ 🎬  <br> 𝙄 𝘸𝘪𝘭𝘭 𝘮𝘢𝘳𝘳𝘺 𝘵𝘩𝘪𝘴 𝘱𝘦𝘳𝘴𝘰𝘯",
+    posts: ["Zanep1.PNG","Zanep2.PNG","Zanep3.PNG", "Zanep4.PNG"],
+      publicaciones: "4",
+    seguidores: "640",
+  siguiendo: "1"
+  },
+  {
+    id: "Kya",
+    nombre: "@Kya-Nya",
+    avatar: "Kyanaf.PNG",
+    bio: "Kya <br> 17 <br> . <br>. <br> Jan|2026|🇹🇩 <br> . <br> . <br> ENTP <br> . <br> . <br> dä-mi toate degetele tale ",
+    posts: ["Kyanap1.PNG","Kyanap2.PNG","Kyanap3.PNG"],
+    publicaciones: "268",
+    seguidores: "1,139",
+  siguiendo: "57"
+  },
+  {
+    id: "Soren",
+    nombre: "@𝖇𝖆𝖇𝖇𝖞_𝖙𝖆𝖑𝖐𝖎𝖓𝖌",
+    avatar: "Sorenf.PNG",
+    bio: "S <br> 17 añitos",
+    posts: ["Sorenp1.PNG","Sorenp2.PNG","Sorenp3.PNG"],
+    publicaciones: "106",
+    seguidores: "1,235",
+  siguiendo: "128"
+  },
+  {
+    id: "Maia",
+    nombre: "@𝓶𝓪𝓲.𝓾𝔀𝓾",
+    avatar: "Maiaf.PNG",
+    bio: "𝖘𝖑𝖆𝖉𝖎𝖈 𝖇𝖔𝖑𝖑 <br> 15 <br> . <br> . <br> . <br> @pan.aaa❤️",
+    posts: ["Maiap1.PNG","Maiap2.PNG","Maiap3.PNG"],
+     publicaciones: "564",
+    seguidores: "872",
+  siguiendo: "59"
+  },
+  {
+    id: "KJ",
+    nombre: "@KyJs",
+    avatar: "Kye.JPG",
+    bio: "ｍａｄｅ ｉｔ ｍｙｓｅｌｆ <br> ᵈᵒ ʸᵒᵘ ʷᵃⁿᵗ ᵗᵒ ᵗᵃˡᵏ? <br>@lm00re_ ❤️",
+    posts: ["Kyep1.PNG","Kyep2.PNG","Kyep3.PNG", "Kyep4.PNG", "Kyep5.PNG"],
+    publicaciones: "17",
+    seguidores: "3,869",
+  siguiendo: "23"
+  },
+  {
+    id: "E V",
+    nombre: "Evv_Hunt",
+    avatar: "Everf.PNG",
+    bio: "𝘿𝙤 𝙣𝙤𝙩 𝙙𝙞𝙨𝙩𝙪𝙧𝙗 🚫",
+    posts: [],
+    publicaciones: "0",
+    seguidores: "75",
+  siguiendo: "9"
+  },
+  {
+    id: "J O N E S",
+    nombre: "@erik_j0nes",
+    avatar: "Erik.jpg",
+    bio: "乂ᐯ <br> 𝐥𝐚𝐬 𝐛𝐮𝐞𝐧𝐚𝐬 𝐜𝐨𝐬𝐚𝐬 𝐭𝐨𝐦𝐚𝐧 𝐭𝐢𝐞𝐦𝐩𝐨.",
+    posts: ["Erikp1.PNG","Erikp2.PNG","Erikp3.PNG"],
+    publicaciones: "40",
+    seguidores: "732",
+  siguiendo: "244"
+  },
+  {
+    id: "Yellow",
+    nombre: "@Pters🥀",
+    avatar: "Cora.jpg",
+    bio: "𝙵𝚒𝚛𝚜𝚝 𝚊𝚗𝚍 𝚏𝚘𝚛𝚎𝚖𝚘𝚜𝚝, 𝚊 𝚚𝚞𝚒𝚎𝚝 𝚍𝚊𝚢",
+    posts: ["Corap1.PNG","Corap2.PNG","Corap3.PNG", "Corap4.PNG", "Corap5.PNG", "Corap6.PNG"],
+    publicaciones: "362",
+    seguidores: "1,485",
+  siguiendo: "307"
+  },
+  {
+    id: "Wayne",
+    nombre: "@Kllnw_",
+    avatar: "Kellan.png",
+    bio: "𝘊𝘰𝘯𝘯𝘰𝘪𝘴𝘴𝘦𝘶𝘳 𝘰𝘧 𝘨𝘰𝘰𝘥 𝘤𝘪𝘯𝘦𝘮𝘢",
+    posts: ["Kellanp1.PNG","Kellanp2.PNG","Kellanp3.PNG"],
+    publicaciones: "3",
+    seguidores: "1,104",
+  siguiendo: "633"
+  },
+  {
+    id: "Al3xx",
+    nombre: "@Leex_DS",
+    avatar: "Alexf.PNG",
+    bio: "Perfil archivado.<br>Otra partecita por abajo.",
+    posts: ["Alexp1.PNG","Alexp2.PNG","Alexp3.PNG", "Alexp4.PNG"],
+     publicaciones: "107",
+    seguidores: "2,462",
+  siguiendo: "52"
+  },
+  {
+    id: "Leoo",
+    nombre: "@Le0_RsS",
+    avatar: "Leof.PNG",
+    bio: "𝑳𝒂 𝒗𝒊𝒅𝒂 𝒆𝒔 𝒎á𝒔 𝒇𝒆𝒍𝒊𝒛 𝒄𝒐𝒏 𝒖𝒏 𝒑𝒆𝒓𝒓𝒐",
+    posts: ["Leop1.PNG","Leop2.PNG","Leop3.PNG"],
+       publicaciones: "10",
+    seguidores: "102",
+  siguiendo: "349"
+  },
+  {
+    id: "C L A I R",
+    nombre: "@Reed_clk",
+    avatar: "Jossf.PNG",
+    bio: "𝘙𝘦𝘥 𝘸𝘪𝘯𝘦 𝘴𝘶𝘱𝘦𝘳𝘯𝘰𝘷𝘢",
+    posts: ["Jossp1.PNG","Jossp2.PNG","Jossp3.PNG"],
+      publicaciones: "74",
+    seguidores: "630",
+  siguiendo: "102"
+  },
+  {
+    id: "Juno",
+    nombre: "@Mull3r_02",
+    avatar: "Junof.PNG",
+    bio: "𝓣𝓻𝓾𝓼𝓽 𝓲𝓷 𝓽𝓱𝓮 𝓼𝓽𝓪𝓻𝓼",
+    posts: [],
+     publicaciones: "0",
+    seguidores: "32",
+  siguiendo: "174"
+  },
+  {
+    id: "Amelie",
+    nombre: "@Amelie",
+    avatar: "Amelief.PNG",
+    bio: "Hola",
+    posts: ["Ameliep1.PNG","Ameliep2.PNG", "Ameliep3.PNG"]
+  },
+  {
+    id: "Alessandro",
+    nombre: "@Alessandro",
+    avatar: "Alessandrof.PNG",
+    bio: "Hola",
+    posts: ["Alessandrop1.PNG","Alessandrop2.PNG","Alessandrop3.PNG"]
+  },
+  {
+    id: "archivo_33",
+    nombre: "archivo_33",
+    avatar: "perfil33.jpg",
+    bio: "Perfil archivado.<br>Otra partecita por abajo.",
+    posts: ["post33-1.jpg","post33-2.jpg","post33-3.jpg"]
+  },
+  {
+    id: "MillerZz",
+    nombre: "@Mrcs_d",
+    avatar: "Marcosf.PNG",
+    bio: "ɴᴇᴇᴅ ᴀɴʏᴛʜɪɴɢ? ᴅᴍ",
+    posts: [],
+     publicaciones: "0",
+    seguidores: "2,211",
+  siguiendo: "278"
+  },
+  {
+    id: "archivo_35",
+    nombre: "archivo_35",
+    avatar: "perfil35.jpg",
+    bio: "Perfil privado.<br>Aún no hay publicaciones.",
+    posts: []
+  },
+  {
+    id: "archivo_36",
+    nombre: "archivo_36",
+    avatar: "perfil36.jpg",
+    bio: "Perfil privado.<br>Aún no hay publicaciones.",
+    posts: []
+  },
+  {
+    id: "archivo_37",
+    nombre: "archivo_37",
+    avatar: "perfil37.jpg",
+    bio: "Perfil privado.<br>Aún no hay publicaciones.",
+    posts: []
+  },
+  {
+    id: "archivo_38",
+    nombre: "archivo_38",
+    avatar: "perfil38.jpg",
+    bio: "Perfil privado.<br>Aún no hay publicaciones.",
+    posts: []
+  },
+  {
+    id: "archivo_39",
+    nombre: "archivo_39",
+    avatar: "perfil39.jpg",
+    bio: "Perfil privado.<br>Aún no hay publicaciones.",
+    posts: []
+  },
+  {
+    id: "archivo_40",
+    nombre: "archivo_40",
+    avatar: "perfil40.jpg",
+    bio: "Perfil privado.<br>Aún no hay publicaciones.",
+    posts: []
+  },
+  {
+    id: "archivo_41",
+    nombre: "archivo_41",
+    avatar: "perfil41.jpg",
+    bio: "Perfil privado.<br>Aún no hay publicaciones.",
+    posts: []
+  },
+  {
+    id: "archivo_42",
+    nombre: "archivo_42",
+    avatar: "perfil42.jpg",
+    bio: "Perfil privado.<br>Aún no hay publicaciones.",
+    posts: []
+  }
+];
+
+const captions = [
+  "There is a light that never goes out 🥀",
+  "",
+  "",
+  "",
+  "Do you know this guy?",
+  "",
+  "",
+  "",
+  "",
+  "",
+   "",
+  "",
+  "",
+  "",
+  "",
+   "",
+  "",
+  "",
+  "",
+  "",
+   "",
+  "",
+  "",
+  "",
+  "",
+   "",
+  "",
+  "",
+  "",
+  "",
+   "",
+  "",
+  "",
+  "",
+  "",
+   "",
+  "",
+  "",
+  "",
+  "",
+  ""
+];
+
+const comentarios = [
+  { img:"Ellief.PNG", user:"butterfly1", text: ""},
+  { img:"Axelf.PNG", user:"axxelitouwuww", text: "" },
+  { img:"Hannetf.PNG", user:"h4nn7ttt", text: "" },
+  { img:"Jiro.jpg", user:"By_JiroDtn", text: ""},
+  { img:"Theof.PNG", user:"dr_0g", text:""},
+  { img:"Jossf.PNG", user:"Reed_clk", text:"" }
+];
+
+const stories = document.getElementById("stories");
+perfiles.forEach((perfil, i) => {
+  stories.innerHTML += `
+    <a class="story" href="#${perfil.id}" onclick="mostrarPerfil('${perfil.id}')">
+      <div class="circle"><img src="${perfil.avatar}" alt="${perfil.nombre}"></div>
+      <span>${perfil.nombre}</span>
+    </a>
+  `;
+});
+
+const posts = document.getElementById("posts");
+perfiles.filter(perfil => perfil.posts.length > 0).forEach((perfil, i) => {
+  const img = perfil.posts[0];
+
+  posts.innerHTML += `
+    <article class="post">
+      <div class="post-head">
+        <img class="avatar" src="${perfil.avatar}" alt="${perfil.nombre}">
+        <div>
+          <span class="user" onclick="mostrarPerfil('${perfil.id}')">${perfil.nombre}</span>
+          <span class="time">· ${i + 1} h</span>
+        </div>
+      </div>
+
+      <img
+        class="post-img"
+        src="${img}"
+        alt="Publicación ${i + 1}"
+        onmouseenter="abrirModal('${img}','${perfil.avatar}','${perfil.nombre}')"
+        onclick="abrirModal('${img}','${perfil.avatar}','${perfil.nombre}')"
+      >
+
+      <div class="actions">♡ 💬 ↗ ☆</div>
+      <p class="caption"><b>${perfil.nombre}</b> ${captions[i] || ""}</p>
+    </article>
+  `;
+});
+
+function moverStories(direccion) {
+  const stories = document.getElementById("stories");
+  stories.scrollLeft += direccion * 260;
+}
+
+function mostrarInicio() {
+  document.getElementById("inicioView").classList.remove("hidden");
+  document.getElementById("perfilView").classList.add("hidden");
+  history.replaceState(null, "", "instagram.html");
+}
+
+function mostrarPerfil(id) {
+  const perfil = perfiles.find(p => p.id === id);
+  if (!perfil) return;
+
+  document.getElementById("inicioView").classList.add("hidden");
+  document.getElementById("perfilView").classList.remove("hidden");
+
+  document.getElementById("perfilView").innerHTML = `
+    <section class="profile">
+      <div class="profile-top">
+        <div class="profile-avatar">
+          <img src="${perfil.avatar}" alt="${perfil.nombre}">
+        </div>
+
+        <div>
+          <div class="profile-name">
+            <h1>${perfil.nombre}</h1>
+            <button>Seguir</button>
+            <button>Mensaje</button>
+          </div>
+
+         <div class="stats">
+  <span><b>${perfil.publicaciones}</b> publicaciones</span>
+  <span><b>${perfil.seguidores}</b> seguidores</span>
+  <span><b>${perfil.siguiendo}</b> siguiendo</span>
+</div>
+
+          <div class="bio">
+           
+            ${perfil.bio}
+          </div>
+        </div>
+      </div>
+
+      <div class="highlights">
+        <div class="highlight"><div><img src="${perfil.avatar}"></div><span></span></div>
+        ${
+          perfil.posts.length > 0
+            ? `
+              <div class="highlight"><div><img src="${perfil.posts[1] || perfil.avatar}"></div><span></span></div>
+              <div class="highlight"><div><img src="${perfil.posts[2] || perfil.avatar}"></div><span></span></div>
+            `
+            : ""
+        }
+      </div>
+
+      <div class="tabs">
+        <span>PUBLICACIONES</span>
+        <span>REELS</span>
+        <span>ETIQUETAS</span>
+      </div>
+
+      <div class="grid-posts">
+        ${
+          perfil.posts.length > 0
+            ? perfil.posts.map(img => `
+              <div
+                class="grid-post"
+                onmouseenter="abrirModal('${img}','${perfil.avatar}','${perfil.nombre}')"
+                onclick="abrirModal('${img}','${perfil.avatar}','${perfil.nombre}')"
+              >
+                <img src="${img}" alt="Publicación de ${perfil.nombre}">
+              </div>
+            `).join("")
+            : `<p style="grid-column:1 / -1;text-align:center;color:#777;padding:44px 12px;">
+                Aún no hay publicaciones.
+              </p>`
+        }
+      </div>
+    </section>
+  `;
+
+  history.replaceState(null, "", "#" + id);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function abrirModal(img, avatar, user) {
+  document.getElementById("modalImg").src = img;
+  document.getElementById("modalAvatar").src = avatar;
+  document.getElementById("modalUser").textContent = user;
+
+  const modalComments = document.getElementById("modalComments");
+  modalComments.innerHTML = `
+    <div class="comment">
+      <img src="${avatar}">
+      <div><b>${user}</b></div>
+    </div>
+  `;
+
+  comentarios.forEach(c => {
+    modalComments.innerHTML += `
+      <div class="comment">
+        <img src="${c.img}">
+        <div><b>${c.user}</b> ${c.text}</div>
+      </div>
+    `;
+  });
+
+  document.getElementById("modal").classList.add("open");
+}
+
+function cerrarModal() {
+  document.getElementById("modal").classList.remove("open");
+}
+
+const perfilInicial = location.hash.replace("#", "");
+if (perfilInicial) {
+  mostrarPerfil(perfilInicial);
+}
+</script>
+</body>
+</html>
